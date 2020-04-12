@@ -1,4 +1,4 @@
-[300. 最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
+[LeetCode 300. 最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 题目描述
 给定一个无序的整数数组，找到其中最长上升子序列的长度。
@@ -52,7 +52,7 @@ int lengthOfLIS(vector<int>& nums) {
 
     return max_len;
 }
-```
+```   
 
 
 ## 改进版
@@ -98,4 +98,5 @@ int lengthOfLIS(vector<int>& nums) {
 
     return tmp_lis.size();
 }
-```
+```   
+
