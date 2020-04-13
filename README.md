@@ -1,5 +1,5 @@
-# <a name="LeetCode_300">LeetCode_300</a>
-1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
+# <a name="leetcode-300">leetcode-300</a>
+## 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 1.1 题目描述
 给定一个无序的整数数组，找到其中最长上升子序列的长度。
@@ -105,8 +105,8 @@ int lengthOfLIS(vector<int>& nums) {
   
   
 
-# <a name="LeetCode_1143">LeetCode_1143</a>
-# 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/submissions/)
+# <a name="leetcode-1143">leetcode-1143</a>
+## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/submissions/)
 
 ## 2.1 题目描述
 给定两个字符串 `text1` 和 `text2`，返回这两个字符串的最长公共子序列。
