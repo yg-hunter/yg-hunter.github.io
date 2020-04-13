@@ -104,8 +104,7 @@ int lengthOfLIS(vector<int>& nums) {
   
   
   
-
-# [leetcode-1143] (#leetcode-1143)
+# [leetcode-1143](#leetcode-1143)
 ## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/submissions/)
 
 ## 2.1 题目描述
