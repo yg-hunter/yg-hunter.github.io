@@ -1,4 +1,4 @@
-# <a id="LeetCode300">LeetCode 300</a>
+# <a name="LeetCode_300">LeetCode_300</a>
 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 1.1 题目描述
@@ -105,7 +105,7 @@ int lengthOfLIS(vector<int>& nums) {
   
   
 
-# <a id="LeetCode_1143">LeetCode 1143</a>
+# <a name="LeetCode_1143">LeetCode_1143</a>
 # 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/submissions/)
 
 ## 2.1 题目描述
