@@ -1,4 +1,13 @@
-# [leetcode-300](#leetcode-300)
+# [leetcode analysis](#leetcode-analysis)
+- ## 动态规划专题 Dynamic Programing
+	1. [线性DP](#1)
+		- [300 最长上升子序列 LIS](#1.1)
+		- [1143 最长公共子序列 LCS](#1.2)
+        - [120 三角形最小路径和](#1.3)  
+   
+
+  
+<h1 id="1.1"> [leetcode 300](#leetcode-300) </h1>  
 ## 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 1.1 题目描述
@@ -104,8 +113,8 @@ int lengthOfLIS(vector<int>& nums) {
   
   
   
-# [leetcode-1143](#leetcode-1143)
-## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/submissions/)
+<h1 id="1.2">[leetcode 1143](#leetcode-1143)</h1>  
+## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
 ## 2.1 题目描述
 给定两个字符串 `text1` 和 `text2`，返回这两个字符串的最长公共子序列。
@@ -204,4 +213,6 @@ int longestCommonSubsequence(string text1, string text2) {
     return DP[len1][len2];
 }
 ```   
-
+  
+<h1 id="1.3">[leetcode 120](#leetcode-120)</h1>  
+## 2 [三角形最小路径和 triangle](https://leetcode-cn.com/problems/triangle/)  
