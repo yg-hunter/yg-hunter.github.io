@@ -219,4 +219,146 @@ int longestCommonSubsequence(string text1, string text2) {
 ```   
   
 <h1 id="1.3">LeetCode 120</h1>  
-## 2 [三角形最小路径和 triangle](https://leetcode-cn.com/problems/triangle/)  
+## 3 [三角形最小路径和 triangle](https://leetcode-cn.com/problems/triangle/)   
+## 3.1 题目描述
+给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+
+#### 示例:
+```
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+```
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+
+#### 说明:
+如果你可以只使用 O(n) 的额外空间（n 为三角形的总行数）来解决这个问题，那么你的算法会很加分。
+
+## 3.2 解题思路
+1、暴力枚举法，找出所有路径并计算出他们的和，找出最小的即可，这样的话复杂度就是O(2的N次方)。
+
+2、可以尝试用贪心法，本题示例好像是没问题，但是我们仔细想想就感觉不对了，看下面示例：  
+```
+[
+      [2],
+    [4, 8],
+   [2, 3, 1],
+  [70,60,15,6]
+]
+```  
+按照贪心的思路，就是2+4+2+60=68，显然不对，为什么呢？因为本题中我们前面选的元素位置，就决定了后面我们只能选哪些数据。故贪心法不适合。  
+  
+3、动态规划解法，对于动态规划解法一般都是从后往前推的思路，跟第一种回溯法思路反过来。下面我们就来重点分析下动态规划。  
+
+
+  
+## 3.3 解决方案  
+  
+### 3.3.1 动态规划
+DP状态定义：DP[i][j]表示从底端往上到第i行第j列时，走过的路径和的最小值。  
+状态转移方程：DP[i][j]=min(DP[i+1][j],DP[i+1][j+1])+triagle[i][j];  
+因为是至底向上找，所以初始值就是最后一行的元素的值，即DP[m-1][j]=triangle[m-1][j]，最后路径和的最小值就是在DP[0][0]中。  
+该算法复杂度为O(m*n)，空间复杂度也是O(m*n)。
+
+c++代码实现如下：  
+
+```
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        if(triangle.empty())
+            return 0;
+
+        int m = triangle.size();
+    	if(m == 1)
+    		return triangle[0][0];
+
+    	int n = triangle[m-1].size();
+    	vector<vector<int>> DP(m, vector<int>(n,0));
+
+    	DP[m-1] = triangle[m-1]; //初始化最后一行
+
+    	for (int i = m-2; i >= 0; i--){ //从倒数第二行开始
+    		for (int j = 0; j < triangle[i].size(); j++){
+    			DP[i][j] = min(DP[i+1][j], DP[i+1][j+1]) + triangle[i][j];
+    		}
+    	}
+
+    	return DP[0][0];
+    }
+};
+```
+上面代码可以改进下，只用一个一维数组存放DP状态，因为其实在计算过程中，始终只使用了其中的一层状态，完全可以复用的，代码如下：
+```
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int m = triangle.size();
+    	vector<int> DP(m, 0);
+
+    	DP = triangle[m-1]; //初始化最后一行
+
+    	for (int i = m-2; i >= 0; i--){ //从倒数第二行开始
+    		for (int j = 0; j < triangle[i].size(); j++){
+    			DP[j] = min(DP[j], DP[j+1]) + triangle[i][j];
+    		}
+    	}
+
+    	return DP[0];
+    }
+};
+```
+
+我把上面c++代码改成了c代码之后，提交leetcode,执行用时降低了1/3，可见还是c代码效率高啊
+```
+int min(int x, int y){
+    return (x<y)?x:y;
+}
+
+int minimumTotal(int** triangle, int triangleSize, int* triangleColSize){
+    if(triangle == NULL || *triangle == NULL || triangleSize == 0 || *triangleColSize == NULL)
+        return 0;
+
+    if(triangleSize == 1)
+        return triangle[0][0];
+    int *DP = (int*)malloc(triangleColSize[triangleSize-1]*sizeof(int));
+    for(int i = 0; i < triangleColSize[triangleSize-1]; i++)
+        DP[i] = triangle[triangleSize-1][i];
+
+    for (int i = triangleSize-2; i >= 0; i--){ //从倒数第二行开始
+        for (int j = 0; j < triangleColSize[i]; j++){
+            DP[j] = min(DP[j], DP[j+1]) + triangle[i][j];
+        }
+    }
+
+    int min_len = DP[0];
+    free(DP);
+    return min_len;
+}
+```  
+
+### 3.3.2  其它解法  
+
+题解中看到一种巧妙的解法，因为本题要求的是每个数下面一层，只能取相邻的俩数，所以我们可以跟动态规划相同思路，从底往上，相邻的两个数取最小的，加到上面一层，逐层这样操作，最后最低端的元素triangel[0][0]的值，即为路径和的最小值。  
+c++代码如下：  
+```
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+    	if(triangle.empty())
+    		return 0;
+
+    	for (int i = triangle.size()-1; i > 0; i--){ 
+    		for (int j = 0; j < triangle[i].size()-1; j++){
+    			triangle[i-1][j] = min(triangle[i][j], triangle[i][j+1]) + triangle[i-1][j];
+    		}
+    	}
+
+    	return triangle[0][0];
+    }
+};
+```  
+
