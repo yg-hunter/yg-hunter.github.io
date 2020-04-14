@@ -7,7 +7,7 @@
    
 
   
-<h1 id="1.1"> [leetcode 300](#leetcode-300) </h1>  
+<h1 id="1.1"> LeetCode 300 </h1>  
 ## 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 1.1 题目描述
@@ -113,7 +113,7 @@ int lengthOfLIS(vector<int>& nums) {
   
   
   
-<h1 id="1.2">[leetcode 1143](#leetcode-1143)</h1>  
+<h1 id="1.2">LeetCode 1143</h1>  
 ## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
 ## 2.1 题目描述
@@ -214,5 +214,5 @@ int longestCommonSubsequence(string text1, string text2) {
 }
 ```   
   
-<h1 id="1.3">[leetcode 120](#leetcode-120)</h1>  
+<h1 id="1.3">LeetCode 120</h1>  
 ## 2 [三角形最小路径和 triangle](https://leetcode-cn.com/problems/triangle/)  
