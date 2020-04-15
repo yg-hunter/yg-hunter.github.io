@@ -478,7 +478,8 @@ int maxSubArray(int* nums, int numsSize){
 
   
 <h1 id="1.5"> LeetCode 152 </h1>  [回到目录](#0)  
-## 5 [最大子序和 maximum subarray](https://leetcode-cn.com/problems/maximum-subarray/)
+## 5 [乘积最大子数组 maximum product subarray](https://leetcode-cn.com/problems/maximum-product-subarray/)  
+
 
 ## 5.1 题目描述
 给你一个整数数组`nums`，请你找出数组中乘积最大的连续子数组(该子数组中至少包含一个数字)。
