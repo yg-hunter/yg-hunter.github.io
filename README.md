@@ -4,9 +4,12 @@
 
 - ## 动态规划专题 Dynamic Programing
 	1. [线性DP](#1)
-		- [300 最长上升子序列 LIS](#1.1)
-		- [1143 最长公共子序列 LCS](#1.2)
-        - [120 三角形最小路径和](#1.3)  
+		- [300. 最长上升子序列 LIS](#1.1)
+		- [1143. 最长公共子序列 LCS](#1.2)
+        - [120. 三角形最小路径和](#1.3)  
+	- [53.最大子序和](#1.4)  
+	
+
    
   
   
@@ -364,4 +367,115 @@ public:
     }
 };
 ```  
+  
+<h1 id="1.4"> LeetCode 53 </h1>  [回到目录](#0)  
+## 4 [最大子序和 maximum subarray](https://leetcode-cn.com/problems/maximum-subarray/)
+
+## 4.1 题目描述
+给定一个整数数组`nums`，找到一个具有最大和的连续子数组(子数组最少包含一个元素)，返回其最大和。
+
+#### 示例:
+```
+输入: [-2,1,-3,4,-1,2,1,-5,4],
+输出: 6
+解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
+```  
+
+**进阶:** 如果你已经实现复杂度为 O(n) 的解法，尝试使用更为精妙的分治法求解  
+
+## 4.2 解题思路
+① 暴力枚举法，找出所有路径并计算出他们的和，找出最小的即可，这样的话复杂度就是O(2的N次方)。
+② 对于用贪心法。自己简单试下就知道不可行。  
+③ 动态规划解法，做过了前面几道题，这题就相对简单点了。   
+下面看下动态规划解法。  
+  
+  
+
+## 4.3 解决方案  
+
+### 4.3.1 动态规划  
+分两步走：  
+1 状态的定义：定义DP[i]，表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列的和。  
+2 状态转移方程：DP[i]=max(DP[i], DP[i-1])+nums[i],初始DP[0] = nums[0]。  
+
+我们可以用一个临时变量存储到i处时当前最大的连续子序列和，遍历完数组后，临时变量的值就是要求的值，这里只需要一层循环，故复杂度为O(N).  
+
+
+c++代码如下：
+```
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        if(nums.empty())
+    		return 0;
+
+    	int len = nums.size();
+    	vector<int> DP(len);
+    	DP[0] = nums[0];
+    	int res = DP[0];
+
+    	for(int i = 1; i < len; i++){
+    		DP[i] = max(DP[i], DP[i-1]) + nums[i];
+    		res = max(res, DP[i]);
+    	}
+    	
+    	return res; 
+    }
+};
+```
+对应的c代码如下：
+```
+int max(int x, int y){
+    return (x>y)?x:y;
+}
+
+int maxSubArray(int* nums, int numsSize){
+	if(nums == NULL || numsSize <= 0)
+		return 0;
+    
+    int *DP = (int*)malloc(numsSize*(sizeof(int)));
+    memset(DP, 0, numsSize*(sizeof(int)));
+	DP[0] = nums[0];
+
+	int res = DP[0];
+	for(int i = 1; i < numsSize; i++){
+		DP[i] = max(DP[i], DP[i-1]) + nums[i];
+		res = max(res, DP[i]);
+	}
+    free(DP);
+	return res;
+}
+```
+
+### 4.3.2 其它解法
+看到题解中有个方法挺好，这里也说下，他的思路是这样的：
+- 对数组进行遍历，当前最大连续子序列和为`sum`，结果为`ans`.  
+- 如果`sum > 0`，则说明`sum`对结果有增益效果，则`sum`保留并加上当前遍历数字.  
+- 如果`sum <= 0`，则说明`sum`对结果无增益效果，需要舍弃，则`sum`直接更新为当前遍历数字.  
+- 每次比较`sum`和`ans`的大小，将最大值置为`ans`，遍历结束返回结果.  
+这样只需额外几个变量即可，也节省了内存。  
+
+我把它写成c代码如下：
+```
+int max(int x, int y){
+    return (x>y)?x:y;
+}
+
+int maxSubArray(int* nums, int numsSize){
+	if(nums == NULL || numsSize <= 0)
+		return 0;
+    
+    int res = nums[0];
+    int sum = 0;
+    for(int i = 0; i < numsSize; i++) {
+        if(sum > 0)
+            sum += nums[i];
+        else
+            sum = nums[i];
+
+        res = max(res, sum);
+    }
+    return res;
+}
+```
 
