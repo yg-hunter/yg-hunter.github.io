@@ -1,4 +1,7 @@
 # [leetcode analysis](#leetcode-analysis)
+
+<h1 id="0">TABEL OF CONTENTS</h1>  
+
 - ## 动态规划专题 Dynamic Programing
 	1. [线性DP](#1)
 		- [300 最长上升子序列 LIS](#1.1)
@@ -9,7 +12,7 @@
   
   
 ***  
-<h1 id="1.1"> LeetCode 300 </h1>  
+<h1 id="1.1"> LeetCode 300 </h1>  [回到目录](#0)  
 ## 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
 ## 1.1 题目描述
@@ -116,7 +119,7 @@ int lengthOfLIS(vector<int>& nums) {
   
   
 ***
-<h1 id="1.2">LeetCode 1143</h1>  
+<h1 id="1.2">LeetCode 1143</h1>  [回到目录](#0)  
 ## 2 [最长公共子序列 longest common subsequence](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
 ## 2.1 题目描述
@@ -218,7 +221,7 @@ int longestCommonSubsequence(string text1, string text2) {
 ```   
   
 ***
-<h1 id="1.3">LeetCode 120</h1>  
+<h1 id="1.3">LeetCode 120</h1>  [回到目录](#0)  
 ## 3 [三角形最小路径和 triangle](https://leetcode-cn.com/problems/triangle/)   
 ## 3.1 题目描述
 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
