@@ -8,11 +8,8 @@
 		- [1143. 最长公共子序列 LCS](#1.2)
         - [120. 三角形最小路径和](#1.3)  
         - [53. 最大子序和](#1.4)   
-	
-	
+        - [152. 乘积最大子数组](#1.5)  
 
-   
-  
   
   
 ***  
@@ -385,9 +382,8 @@ public:
 **进阶:** 如果你已经实现复杂度为 O(n) 的解法，尝试使用更为精妙的分治法求解  
 
 ## 4.2 解题思路
-① 暴力枚举法，找出所有路径并计算出他们的和，找出最小的即可，这样的话复杂度就是O(2的N次方)。
-② 对于用贪心法。自己简单试下就知道不可行。  
-③ 动态规划解法，做过了前面几道题，这题就相对简单点了。   
+① 暴力枚举法，找出所有连续子序列并计算出他们的和，找出最大的即可，这样的话复杂度就是O(2的N次方)。
+② 动态规划解法，做过了前面几道题，这题就相对简单点了。   
 下面看下动态规划解法。  
   
   
@@ -480,3 +476,90 @@ int maxSubArray(int* nums, int numsSize){
 }
 ```
 
+  
+<h1 id="1.5"> LeetCode 152 </h1>  [回到目录](#0)  
+## 5 [最大子序和 maximum subarray](https://leetcode-cn.com/problems/maximum-subarray/)
+
+## 5.1 题目描述
+给你一个整数数组`nums`，请你找出数组中乘积最大的连续子数组(该子数组中至少包含一个数字)。
+
+#### 示例 1:
+```
+输入: [2,3,-2,4]
+输出: 6
+解释: 子数组 [2,3] 有最大乘积 6。
+```    
+#### 示例 2:
+```
+输入: [-2,0,-1]
+输出: 0
+解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+```  
+
+## 5.2 解题思路
+① 暴力枚举法，也叫递归法，这里就不看了。
+② 动态规划解法，跟上面那题子序列和最大类似，不过比它复杂点。   
+下面具体看下解法。  
+  
+  
+
+## 5.3 解决方案  
+
+### 5.3.1 动态规划  
+因为这里整数数组里可能有为负数的值，而且负数乘以负数又会是正的值，那么我们不能像上面那题求子数组和最大的求法了，这里对于每个nums[i]，要计算正的最大值，也要计算负的最小值，因为后面如果有负数的话，负的最小值乘以负数，就会是正的最大值了。
+分两步走：  
+1 状态的定义：定义DP[2][i][，DP[0]里存的都是正的最大值，DP[1]里存的都是负的最小值；DP[0][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的最大值，DP[1][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的负最小值。  
+2 状态转移方程：  
+
+
+我们可以用一个临时变量存储到i处时当前最大的连续子序列和，遍历完数组后，临时变量的值就是要求的值，这里只需要一层循环，故复杂度为O(N). 
+
+c++代码如下，这里我用了俩数组，效果跟DP[2][i]一样：
+```
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        if(nums.empty())
+    		return 0;
+
+    	int len = nums.size();
+
+    	vector<int> max_val(len);
+    	vector<int> min_val(len);
+    	max_val[0] = nums[0];
+    	min_val[0] = nums[0];
+    	int max_product = nums[0];	
+
+    	for(int i = 1; i < len; i++){
+    		max_val[i] = max(max(max_val[i-1]*nums[i], min_val[i-1]*nums[i]), nums[i]);
+    		min_val[i] = min(min(max_val[i-1]*nums[i], min_val[i-1]*nums[i]), nums[i]);
+    		max_product = max(max_product, max_val[i]);
+    	}
+	    
+    	return max_product;
+    }
+};
+```
+这里可以优化下，上面其实没必要用数组， 因为我们每次都取最小或最大值，所以可以只用两个变量存储，改进代码如下：
+``
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        if(nums.empty())
+    		return 0;
+
+    	int max_val = nums[0], min_val = nums[0], max_product = nums[0];	
+
+    	for(int i = 1; i < nums.size(); i++){
+    		max_val = max_val*nums[i];
+    		min_val = min_val*nums[i];
+
+    		max_val = max(max(max_val, min_val), nums[i]);
+    		min_val = min(min(min_val, max_val), nums[i]);            
+    		max_product = max(max_product, max_val);
+    	}
+	    
+    	return max_product;
+    }
+};
+``
