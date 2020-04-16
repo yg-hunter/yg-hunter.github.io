@@ -1,16 +1,20 @@
 # [leetcode analysis](#leetcode-analysis)
+<br/>
+<br/>
 
 <h1 id="0">TABEL OF CONTENTS</h1>  
 
 - ## 动态规划专题 Dynamic Programing
 	1. [线性DP](#1)
-		- [300.  最长上升子序列 LIS](#1.1)
-		- [1143. 最长公共子序列 LCS](#1.2)
-        - [120.  三角形最小路径和](#1.3)  
-        - [53.   最大子序和](#1.4)   
-        - [152.  乘积最大子数组](#1.5)  
+		- [300. &nbsp;最长上升子序列 LIS](#1.1)
+		- [1143. &nbsp;最长公共子序列 LCS](#1.2)
+        - [120. &nbsp;三角形最小路径和](#1.3)  
+        - [53. &ensp;最大子序和](#1.4)   
+        - [152. &nbsp;乘积最大子数组](#1.5)  
 
-  
+  <br/>
+  <br/>
+  <br/>
   
 ***  
 <h1 id="1.1"> LeetCode 300 </h1>  [回到目录](#0)  
@@ -117,7 +121,9 @@ int lengthOfLIS(vector<int>& nums) {
 }
 ```   
   
-  
+  <br/>
+  <br/>
+  <br/>
   
 ***
 <h1 id="1.2">LeetCode 1143</h1>  [回到目录](#0)  
@@ -220,6 +226,9 @@ int longestCommonSubsequence(string text1, string text2) {
     return DP[len1][len2];
 }
 ```   
+  <br/>
+  <br/>
+  <br/>
   
 ***
 <h1 id="1.3">LeetCode 120</h1>  [回到目录](#0)  
@@ -366,6 +375,10 @@ public:
 };
 ```  
   
+  <br/>
+  <br/>
+  <br/>
+  
 <h1 id="1.4"> LeetCode 53 </h1>  [回到目录](#0)  
 ## 4 [最大子序和 maximum subarray](https://leetcode-cn.com/problems/maximum-subarray/)
 
@@ -475,7 +488,9 @@ int maxSubArray(int* nums, int numsSize){
     return res;
 }
 ```
-
+  <br/>
+  <br/>
+  <br/>
   
 <h1 id="1.5"> LeetCode 152 </h1>  [回到目录](#0)  
 ## 5 [乘积最大子数组 maximum product subarray](https://leetcode-cn.com/problems/maximum-product-subarray/)  
