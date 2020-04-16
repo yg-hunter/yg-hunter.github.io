@@ -522,10 +522,14 @@ int maxSubArray(int* nums, int numsSize){
 ## 5.3 解决方案  
 
 ### 5.3.1 动态规划  
-因为这里整数数组里可能有为负数的值，而且负数乘以负数又会是正的值，那么我们不能像上面那题求子数组和最大的求法了，这里对于每个nums[i]，要计算正的最大值，也要计算负的最小值，因为后面如果有负数的话，负的最小值乘以负数，就会是正的最大值了。  
+因为这里整数数组里可能有为负数的值，而且负数乘以负数又会是正的值，那么我们不能像上面那题求子数组和最大的求法了，这里对于每个nums[i]，要计算正的最大值，也要计算最小值，因为最小值为负，则后面如果有负数的话，负的最小值乘以负数，就会是正的最大值了。  
 分两步走：  
-1 状态的定义：定义DP[2][i][，DP[0]里存的都是正的最大值，DP[1]里存的都是负的最小值；DP[0][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的最大值，DP[1][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的负最小值。  
+1 状态的定义：定义DP[2][i][，DP[0]里存的都是最大值，DP[1]里存的都是最小值；DP[0][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的最大值，DP[1][i]表示第i个元素及其前面元素组成的子数组(下标0-i)中，连续子序列乘积的最小值。  
 2 状态转移方程：  
+DP[0][i] = max(DP[0][i-1]*nums[i], DP[1][i-1]*nums[i], nums[i])  
+DP[1][i] = max(DP[1][i-1]*nums[i], DP[0][i-1]*nums[i], nums[i])  
+那么最大子数组乘积就是上面最大值中的最大值：  
+max_product = max(DP[0][0...n]);  
 
 
 我们可以用一个临时变量存储到i处时当前最大的连续子序列和，遍历完数组后，临时变量的值就是要求的值，这里只需要一层循环，故复杂度为O(N). 
@@ -564,20 +568,26 @@ class Solution {
 public:
     int maxProduct(vector<int>& nums) {
         if(nums.empty())
-    		return 0;
+        return 0;
 
-    	int max_val = nums[0], min_val = nums[0], max_product = nums[0];	
+        int max_val = nums[0], min_val = nums[0], max_product = nums[0];
+        int tmp_max = 0, tmp_min = 0;   
 
-    	for(int i = 1; i < nums.size(); i++){
-    		max_val = max_val*nums[i];
-    		min_val = min_val*nums[i];
+        for(int i = 1; i < nums.size(); i++){
+            tmp_max = max_val*nums[i];
+            tmp_min = min_val*nums[i];
 
-    		max_val = max(max(max_val, min_val), nums[i]);
-    		min_val = min(min(min_val, max_val), nums[i]);            
-    		max_product = max(max_product, max_val);
-    	}
-	    
-    	return max_product;
+            max_val = max(max(tmp_max, tmp_min), nums[i]);
+            min_val = min(min(tmp_max, tmp_min), nums[i]);
+
+            max_product = max(max_product, max_val);
+        }
+        
+        return max_product;
     }
 };
-```
+```  
+
+
+
+
