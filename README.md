@@ -12,6 +12,7 @@
         - [53.   最大子序和](#1.4)   
         - [152.  乘积最大子数组](#1.5)  
         - [887.  鸡蛋掉落](#1.6) 
+        - [354.  俄罗斯套娃信封问题](#1.7) 
 
   <br/>
   <br/>
@@ -714,9 +715,78 @@ return DP[N][K];
 ```  
 
 
- 
+  <br/>
+  <br/>
+  <br/>
+  
+***
+<h1 id="1.7"> LeetCode 354 </h1>  [回到目录](#0)  
+## 7 [俄罗斯套娃信封问题 russian doll envelopes](https://leetcode-cn.com/problems/russian-doll-envelopes/)  
 
 
+## 7.1 题目描述
+给定一些标记了宽度和高度的信封，宽度和高度以整数对形式 `(w, h)` 出现。当另一个信封的宽度和高度都比这个信封大的时候，这个信封就可以放进另一个信封里，如同俄罗斯套娃一样。  
+  
+  
+
+请计算最多能有多少个信封能组成一组“俄罗斯套娃”信封（即可以把一个信封放到另一个信封里面）。  
+
+### 说明
+不允许旋转信封。  
+
+
+#### 示例:
+```
+输入: envelopes = [[5,4],[6,4],[6,7],[2,3]]  
+输出: 3   
+解释: 最多信封的个数为 3, 组合为: [2,3] => [5,4] => [6,7]。  
+```    
+  
+  
+## 7.2 解题思路
+① 显然，本题可以用递归去做，但是会有很多的重复计算，复杂度高，耗时大。
+② 动态规划解法，仔细思考本题就会发现，跟LeetCode 300题的求最长上升子序列很类似，只不过这里我们要先将信封按宽度、高度先排好序。
+下面具体看下解法。  
+  
+  
+
+## 7.3 解决方案  
+
+### 7.3.1 动态规划  
+注意题目中要求是一个信封的`宽度和高度都比`另一个信封的大时，才能满足放入。所以这里我们的比较函数要有两个维度的比较，先按宽度或长度比较大小，若相等则要按另一个维度继续比较排序，不然求出来的值就是不对的。关于DP状态定义及转移方程，跟[300.  最长上升子序列 LIS](#1.1)的思路很类似，这里就不具体说了。  
+具体c++代码如下：  
+
+```
+bool cmp_less(vector<int> &a, vector<int> &b) 
+{
+	if(a[0] != b[0])
+		return a[0] < b[0];
+	else if (a[1] != b[1])
+		return a[1] > b[1];
+
+	return 0;
+}
+
+int maxEnvelopes(vector<vector<int>>& envelopes) 
+{
+	int len = envelopes.size();
+	if (len <= 1)
+	    return len;
+
+	sort(envelopes.begin(), envelopes.end(), cmp_less);
+
+	vector<int> DP(len, 1);
+	int max_envelopes = 1;
+	for (int i = 0; i < len; ++i) {
+	    for (int j = 0; j < i; ++j) {
+		if (envelopes[i][1] > envelopes[j][1])
+		    DP[i] = max(DP[i], DP[j]+1);
+	    }
+	    max_envelopes = max(max_envelopes, DP[i]);
+	}
+	return max_envelopes;
+}
+```
 
 
 
