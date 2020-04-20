@@ -13,6 +13,7 @@
         - [152.  乘积最大子数组](#1.5)  
         - [887.  鸡蛋掉落](#1.6) 
         - [354.  俄罗斯套娃信封问题](#1.7) 
+        - [198.  打家劫舍](#1.8) 
 
   <br/>
   <br/>
@@ -792,4 +793,94 @@ int maxEnvelopes(vector<vector<int>>& envelopes)
 ```
 
 
+***  
+<h1 id="1.8"> LeetCode 198 </h1>  [回到目录](#0)  
+## 8 [打家劫舍 house robber](https://leetcode-cn.com/problems/house-robber/)
 
+## 8.1 题目描述
+你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，**如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警**。  
+
+
+给定一个代表每个房屋存放金额的非负整数数组，计算你在**不触动警报装置的情况下**，能够偷窃到的最高金额。  
+
+
+#### 示例 1:
+```
+输入: [1,2,3,1]
+输出: 4
+解释: 偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。  
+     偷窃到的最高金额 = 1 + 3 = 4 。
+```
+
+#### 示例 2:
+```
+输入: [2,7,9,3,1]  
+输出: 12  
+解释: 偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。  
+     偷窃到的最高金额 = 2 + 9 + 1 = 12 。  
+```  
+
+
+## 8.2 解题思路  
+仔细审题后，我们知道，就是求解一组数据的最大和，且所选的这些数据不能相邻。  
+1、首先这道题可以用回溯递归的方式解决  
+2、动态规划思路，可以从前面的子结构逐步最优求解，具体解法看下面。  
+  
+  
+
+## 8.3 解决方案
+### 8.3.1 动态规划  
+两步走：  
+1、状态定义：DP[i]表示到第i个元素时，其前面满足条件的数据元素之和的最大值。  
+2、状态转移方程：DP[i] = max(DP[i-2]+nums[i], DP[i-1]) (2<=i<n)。因为第i个元素我们可以选或者不选，不选的话，就是取DP[i-1]。  
+初始值：DP[0] = nums[0]  
+		DP[1] = max(nums[0], nums[1])  
+		
+c++代码实现如下：
+```
+int rob(vector<int>& nums) 
+{
+	if(nums.empty())
+		return 0;
+
+	int len = nums.size();
+	if(len == 1)
+		return nums[0];
+
+	if(len == 2)
+		return max(nums[0], nums[1]);
+
+	int max_val = nums[0];
+	vector<int> DP(len);
+	DP[0] = nums[0]; 
+	DP[1] = max(nums[0], nums[1]);
+	for(int i = 2; i < len; i++){
+		for(int j = 2; j <= i; j++){
+			DP[j] = max(DP[j-2]+nums[j], DP[j-1]);
+			DP[i] = max(DP[i], DP[j]);
+		}
+
+		max_val = max(max_val, DP[i]);
+	}
+	return max_val;
+}
+```
+
+### 8.3.2 优化版  
+官方解答中的代码写的相当简洁，只用俩临时变量存储当前最大和及前一个最大和的值。  
+
+```
+int rob(vector<int>& nums) 
+{
+	if(nums.empty())
+		return 0;
+
+	int prevMax = 0, currMax = 0;
+	for (int x : nums) {
+		int temp = currMax;
+		currMax = max(prevMax + x, currMax);
+		prevMax = temp;
+	}
+	return currMax;
+}
+```
