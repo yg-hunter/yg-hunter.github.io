@@ -875,9 +875,6 @@ int rob(vector<int>& nums)
 ```
 int rob(vector<int>& nums) 
 {
-	if(nums.empty())
-		return 0;
-
 	int prevMax = 0, currMax = 0;
 	for (int x : nums) {
 		int temp = currMax;
