@@ -841,32 +841,28 @@ int maxEnvelopes(vector<vector<int>>& envelopes)
 		
 c++代码实现如下：
 ```
-int rob(vector<int>& nums) 
-{
-	if(nums.empty())
-		return 0;
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0)
+            return 0;
+        if(len == 1)
+            return nums[0];
+        if(len == 2)
+            return max(nums[0],nums[1]);
 
-	int len = nums.size();
-	if(len == 1)
-		return nums[0];
+        vector<int> DP(len);
+        DP[0] = nums[0];
+        DP[1] = max(nums[0], nums[1]);
 
-	if(len == 2)
-		return max(nums[0], nums[1]);
+        for(int i = 2; i < len; i++){
+            DP[i] = max(DP[i-2]+nums[i], DP[i-1]);
+        }
 
-	int max_val = nums[0];
-	vector<int> DP(len);
-	DP[0] = nums[0]; 
-	DP[1] = max(nums[0], nums[1]);
-	for(int i = 2; i < len; i++){
-		for(int j = 2; j <= i; j++){
-			DP[j] = max(DP[j-2]+nums[j], DP[j-1]);
-			DP[i] = max(DP[i], DP[j]);
-		}
-
-		max_val = max(max_val, DP[i]);
-	}
-	return max_val;
-}
+        return DP[len-1];
+    }
+};
 ```
 
 ### 8.3.2 优化版  
