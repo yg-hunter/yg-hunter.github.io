@@ -1075,37 +1075,23 @@ public:
    
  max{dp[u][0],dp[u][1]},u∈tree  
 
+代码中用pair存储选或不选该节点时的最大值  
 ```
 class Solution {
 public:
-    int ans = 0;
-    typedef pair<int,int> pii;
-    /*
-    dp[u][0] = sum{max(dp[v][1], dp[v][0])};
-    dp[u][1] = sum({dp[v][0]+u.val})
-    */
-    pii dfs(TreeNode* u)
-    {
-        if(!u)
-            return pii(0,0);
-
-        pii ret(0,u->val);
-        if(u->left){
-            pii t = dfs(u->left);
-            ret.first+=max(t.first, t.second);
-            ret.second+=t.first;
+    pair<int, int> dfs(TreeNode *root) {
+        if (root == nullptr) {
+            return { 0, 0 };
         }
-        if(u->right){
-            pii t = dfs(u->right);
-            ret.first+=max(t.first, t.second);
-            ret.second+=t.first;
-        }
-        ans = max({ans, ret.first, ret.second});
-        return ret;
+        auto left_pair = dfs(root->left);
+        auto right_pair = dfs(root->right);
+        return { root->val + left_pair.second + right_pair.second, 
+                max(left_pair.first, left_pair.second) + max(right_pair.first, right_pair.second) };
     }
+    
     int rob(TreeNode* root) {
-        pii _ = dfs(root);
-        return ans;
+        auto p = dfs(root);
+        return max(p.first, p.second);
     }
 };
 ```
