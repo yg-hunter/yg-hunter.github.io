@@ -1066,23 +1066,17 @@ public:
 
   
 ### 1.3.2 动态规划  
-看到[题解中](https://leetcode-cn.com/problems/house-robber-iii/solution/shu-xing-dpru-men-jian-dan-si-lu-by-wu-yu-61/)，有个代码写的还是很易懂的。  
+看到[题解中](https://leetcode-cn.com/problems/house-robber-iii/solution/cdong-tai-gui-hua-si-xiang-shi-xian-xiang-xi-shuo-/)，这个代码写的还是很易懂的。  
   
-每一个结点有取和不取两种状态：  
 
-   - dp[u][0]表示不选当前结点uuu的情况下，以uuu为根的子树所能得到得最大值;
-   - dp[u][1]表示选当前结点uuu的情况下以，uuu为根的子树所能得到得最大值.  
-   
- max{dp[u][0],dp[u][1]},u∈tree  
-
-代码中用pair存储选或不选该节点时的最大值  
+代码中用深度优先遍历树，然后用pair存储选或不选该节点时的最大值  
 ```
 class Solution {
 public:
     pair<int, int> dfs(TreeNode *root) {
-        if (root == nullptr) {
+        if (root == nullptr)
             return { 0, 0 };
-        }
+		
         auto left_pair = dfs(root->left);
         auto right_pair = dfs(root->right);
         return { root->val + left_pair.second + right_pair.second, 
