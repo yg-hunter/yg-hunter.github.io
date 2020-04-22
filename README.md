@@ -14,10 +14,19 @@
         - [887.  鸡蛋掉落](#1.6) 
         - [354.  俄罗斯套娃信封问题](#1.7) 
         - [198.  打家劫舍](#1.8) 
-		- [213.  打家劫舍 Ⅱ](#1.9) 
+		- [213.  打家劫舍 Ⅱ](#1.9)   
+		
+		
+	2. [树形DP](#2)
+		- [337. 打家劫舍 Ⅲ](#2.1)
 
   <br/>
   <br/>
+  <br/>
+  <br/>
+  
+  
+<h1 id="1"> 线性DP </h1>
   <br/>
   
 ***  
@@ -965,3 +974,180 @@ public:
     }
 };
 ```
+
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  
+<h1 id="2"> 树形DP </h1>  
+  
+  
+  <br/>
+
+***  
+<h1 id="2.1"> LeetCode 337 </h1>  [回到目录](#0)  
+## 1 [打家劫舍 Ⅲ house robber](https://leetcode-cn.com/problems/house-robber-iii/)
+
+## 1.1 题目描述
+在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果**两个直接相连**的房子在同一天晚上被打劫，房屋将自动报警。  
+计算在不触动警报的情况下，小偷一晚能够盗取的最高金额。  
+  
+
+#### 示例 1:
+```
+输入: [3,2,3,null,3,null,1]
+
+     3
+    / \
+   2   3
+    \   \ 
+     3   1
+
+输出: 7 
+解释: 小偷一晚能够盗取的最高金额 = 3 + 3 + 1 = 7.
+```
+
+#### 示例 2:
+```
+输入: [3,4,5,1,3,null,1]
+
+     3
+    / \
+   4   5
+  / \   \ 
+ 1   3   1
+
+输出: 9
+解释: 小偷一晚能够盗取的最高金额 = 4 + 5 = 9.
+```    
+
+## 1.2 解题思路  
+仔细审题可以看出，本题是树形的动态规划问题，注意题目要求：如果**两个直接相连**的房子在同一天晚上被打劫，房屋将自动报警。
+  
+由于题目要求可知，直接相连的节点间只能有一个能选，所以就分两种情况了：  
+ - 选根节点，则其子节点就不能再选了  
+ - 不选根节点，则俩子节点都能选取  
+所以本题可以暴力枚举(递归)求解，也可以优化改进后用动态规划算法求解。具体下面分析。
+  
+
+## 1.3 解决方案
+### 1.3.1 暴力枚举  
+根据上面分析可以写出暴力枚举的解法，如下：
+
+c++代码(递归求解)
+```
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        if(root == nullptr)
+            return 0;
+
+        int max_val = root->val; //选取根节点，然后递归求根节点的孙子节点
+        if(root->left != nullptr)
+            max_val += rob(root->left->left) + rob(root->left->right);
+        
+        if(root->right != nullptr)
+            max_val += rob(root->right->left) + rob(root->right->right);
+
+        return max(max_val, rob(root->left)+rob(root->right)); //两种情况取最大值
+    }
+};
+```
+
+  
+### 1.3.2 动态规划  
+看到[题解中](https://leetcode-cn.com/problems/house-robber-iii/solution/shu-xing-dpru-men-jian-dan-si-lu-by-wu-yu-61/)，有个代码写的还是很易懂的。  
+  
+每一个结点有取和不取两种状态：  
+
+   - dp[u][0]表示不选当前结点uuu的情况下，以uuu为根的子树所能得到得最大值;
+   - dp[u][1]表示选当前结点uuu的情况下以，uuu为根的子树所能得到得最大值.  
+   
+ max{dp[u][0],dp[u][1]},u∈tree  
+
+```
+class Solution {
+public:
+    int ans = 0;
+    typedef pair<int,int> pii;
+    /*
+    dp[u][0] = sum{max(dp[v][1], dp[v][0])};
+    dp[u][1] = sum({dp[v][0]+u.val})
+    */
+    pii dfs(TreeNode* u)
+    {
+        if(!u)
+            return pii(0,0);
+
+        pii ret(0,u->val);
+        if(u->left){
+            pii t = dfs(u->left);
+            ret.first+=max(t.first, t.second);
+            ret.second+=t.first;
+        }
+        if(u->right){
+            pii t = dfs(u->right);
+            ret.first+=max(t.first, t.second);
+            ret.second+=t.first;
+        }
+        ans = max({ans, ret.first, ret.second});
+        return ret;
+    }
+    int rob(TreeNode* root) {
+        pii _ = dfs(root);
+        return ans;
+    }
+};
+```
+  
+  
+另一种解法：  
+由于只有两种状态，所以可以用一个数组(仅2个元素就够了)来保存，当0时，就为不打劫当前节点，当为1时，就为打劫当前节点。  
+  - 当为0时，只需返回左子树和右子树的和最大值  
+  - 当为1时，只需将root节点的值加上不选取左子树和右子树(即左子树和右子树状态码均为0的状态)的结果返回即可  
+
+c++代码如下：  
+```
+class Solution {
+public:
+    void do_rob(TreeNode* root, vector<int>& max_val) {
+        if (root == nullptr) 
+            return ;
+        
+        vector<int> left_val(2);
+        do_rob(root->left, left_val);
+        
+        vector<int> right_val(2);
+        do_rob(root->right, right_val);
+
+        max_val[0] = max(left_val[0], left_val[1]) + max(right_val[0], right_val[1]);
+        max_val[1] = root->val + left_val[0] + right_val[0];
+        
+        return ;
+    }
+
+    int rob(TreeNode* root) {
+        if(root == nullptr)
+            return 0;
+
+        vector<int> max_val(2);
+        do_rob(root, max_val);
+        return max(max_val[0], max_val[1]);
+    }
+};
+```
+
+
+
+
