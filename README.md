@@ -26,10 +26,9 @@
   <br/>
   
   
-<h1 id="1"> 线性DP </h1>
+<h1 id="1"> 线性DP </h1> [回到目录](#0)  
   <br/>
   
-***  
 <h1 id="1.1"> LeetCode 300 </h1>  [回到目录](#0)  
 ## 1 [最长上升子序列 longest increasing subsequence](https://leetcode-cn.com/problems/longest-increasing-subsequence)
 
@@ -981,12 +980,12 @@ public:
   <br/>
   <br/>
   
-<h1 id="2"> 树形DP </h1>  
+<h1 id="2"> 树形DP </h1>  [回到目录](#0)  
   
   
-  <br/>
-
-***  
+  <br/>  
+  
+  
 <h1 id="2.1"> LeetCode 337 </h1>  [回到目录](#0)  
 ## 1 [打家劫舍 Ⅲ house robber](https://leetcode-cn.com/problems/house-robber-iii/)
 
@@ -1111,7 +1110,7 @@ public:
 };
 ```
   
-  
+  <br/>
 另一种解法：  
 由于只有两种状态，所以可以用一个数组(仅2个元素就够了)来保存，当0时，就为不打劫当前节点，当为1时，就为打劫当前节点。  
   - 当为0时，只需返回左子树和右子树的和最大值  
