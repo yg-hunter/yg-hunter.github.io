@@ -14,7 +14,8 @@
         - [887.  鸡蛋掉落](#1.6) 
         - [354.  俄罗斯套娃信封问题](#1.7) 
         - [198.  打家劫舍](#1.8) 
-		- [213.  打家劫舍 Ⅱ](#1.9)   
+		- [213.  打家劫舍 Ⅱ](#1.9)  
+		- [121.  买卖股票的最佳时机](#1.10)   
 		
 		
 	2. [树形DP](#2)
@@ -972,7 +973,109 @@ public:
         return max(DP[len-1], DP[len-2]);
     }
 };
+```  
+  
+  
+  <br/>
+  <br/>
+  <br/>
+  
+***
+<h1 id="1.10">LeetCode 121</h1>  [回到目录](#0)  
+## 10 [买卖股票的最佳时机 best time to buy and sell stock](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)   
+## 10.1 题目描述  
+给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。  
+
+如果你最多只允许完成一笔交易（即买入和卖出一支股票一次），设计一个算法来计算你所能获取的最大利润。  
+
+> 注意：你不能在买入股票前卖出股票。  
+
+
+#### 示例 1:
 ```
+输入: [7,1,5,3,6,4]
+输出: 5
+解释: 在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。  
+     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。   
+```  
+
+#### 示例 2:
+```
+输入: [7,6,4,3,1]
+输出: 0
+解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。
+```
+
+
+## 10.2 解题思路  
+1、因为只能买卖一次，所以我们可以找出前面的最小值，记录下来，然后让后面的每一个减去这个最小值，取其结果最大的即为所求。    
+2、动态规划解法，下面我们就来重点分析下动态规划。   
+
+
+  
+## 10.3 解决方案  
+
+### 10.3.1 
+思路1代码实现如下：
+```
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(prices.empty())
+            return 0;
+
+        int min_val = prices[0];
+        int max_profit = 0;
+        
+        for(int i = 1; i < prices.size(); i++){
+            max_profit = max(max_profit, prices[i] - min_val);
+            min_val = min(min_val, prices[i]);
+        }
+
+        return max_profit;
+    }
+};
+```
+  
+### 10.3.2 动态规划
+两步走  
+ - 状态定义：DP[i][j]，其中i表示到第i天，第二维的j表示： 0为未买过股票，1为买入了股票但是还未卖，2为买过一次股票，现在卖掉。  
+ - 状态转移方程：  
+            DP[i][0] = DP[i-1][0];  // 之前未买卖过股票，这次也不买入股票时，收益的最大值  
+            DP[i][1] = max(DP[i-1][1], DP[i-1][0]-prices[i]);  // 之前买入了，这次也不卖掉；或者之前没买入，这次买入时，收益最大值   
+			DP[i][2] = DP[i-1][1] + prices[i];  // 之前买入的，这次卖掉，收益最大值   
+			
+  
+最后，收益最大值就是所有的DP[i][0]，DP[i][2]中取最大值，因为收益最大，最后股票肯定要卖掉，所以不用考虑DP[i][1](这里股票价格为正)。      
+
+  
+因为就用了一重循环，所以算法复杂度为O(n)，空间复杂度也是O(n*3),也即为O(n)。  
+
+c++代码如下：
+```
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        if(len == 0)
+            return 0;
+
+        int max_profit = 0;
+        vector<vector<int>> DP(len, vector<int>(3));
+        DP[0][1] = 0-prices[0]; //买入
+        
+        for(int i = 1; i < len; i++){
+            DP[i][0] = DP[i-1][0];
+            DP[i][1] = max(DP[i-1][1], DP[i-1][0]-prices[i]);
+            DP[i][2] = DP[i-1][1] + prices[i];
+            max_profit = max(max_profit, max(DP[i][0], DP[i][2]));
+        }
+
+        return max_profit;
+    }
+};
+```  
+
 
 
   <br/>
