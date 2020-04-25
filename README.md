@@ -1391,21 +1391,44 @@ int maxProfit(int k, vector<int>& prices) {
 	return max_val;
 }
 ```  
-然后拿上面那个测试用例测试(k=10亿，n=1w)，报超出时间限制！我在我自己虚拟机测试了下，跑完用了56s，结果输出如下：
+然后拿上面那个测试用例测试(k=10亿，n=1w)，报超出时间限制！我在我自己虚拟机测试了下，跑完用了56s，看来还是要继续优化。仔细再审题发现，其实某一天如果手中有股票的话，可以当天先卖掉再买入的，也就是说k可以大于天数的一半。  
+当k>len/2时，此时可以贪心法，只要利润不为负，就可以累加计算。修正之后代码如下，LeetCode提交通过：  
+
 ```
-k=1000000000, len=10000
-k=5001, len=10000
+    int maxProfit(int k, vector<int>& prices) {
+        if(prices.empty() || k <= 0)
+            return 0;
+        
+        int len = prices.size();
+        int max_val = 0;
+        if(k > len/2) {
+            for(int i = 1; i < len; i++){
+                int tmp_val = prices[i] - prices[i-1];
+                if(tmp_val > 0){
+                    max_val += tmp_val;
+                }
+            }
+            return max_val;
+        }
 
+        // k < (len/2+1)情况        
+        vector<vector<vector<int>>> max_profit(len, vector<vector<int>>(k+1, vector<int>(2, 0xff000000)));
+        max_profit[0][0][0] = 0;
+        max_profit[0][1][1] = -prices[0];
 
-max_val:1648857
+        for(int i = 1; i < len; i++){
+            max_profit[i][0][0] = 0;
+            for(int j = 1; j <= k; j++){
+                max_profit[i][j][0] = max(max_profit[i-1][j][0], max_profit[i-1][j][1]+prices[i]);
+                max_profit[i][j][1] = max(max_profit[i-1][j][1], max_profit[i-1][j-1][0]-prices[i]);
+            }            
+        }
+        for(int j = 0; j <= k; j++)
+            max_val = max(max_val, max_profit[len-1][j][0]);
 
-
-real    0m56.121s
-user    0m16.645s
-sys     0m26.421s
+        return max_val;
+    }
 ```
-
-看来还是要继续优化。
 
   
 
