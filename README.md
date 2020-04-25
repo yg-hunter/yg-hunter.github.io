@@ -1430,6 +1430,38 @@ int maxProfit(int k, vector<int>& prices) {
     }
 ```
 
+[题解中](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/c-zhuang-tai-ya-suo-dong-tai-gui-hua-by-da-li-wa-4/)有个优化点，采用k倒序来压缩状态，在时间和空间复杂度上都降低了不少，比较优秀，代码贴出来学习下：  
+```
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        if(k<=0 || prices.empty())
+            return 0;
+        
+        int len = prices.size();
+        int max_val = 0;
+        if(k > len/2) {
+            for(int i = 1; i < len; i++){
+                int tmp_val = prices[i] - prices[i-1];
+                if(tmp_val > 0){
+                    max_val += tmp_val;
+                }
+            }
+            return max_val;
+        }
+        
+        vector<vector<int> > dp(k + 1, vector<int>{0, INT_MIN});
+        for (int i = 0; i < len; ++i) {
+            for (int j = k; j > 0; --j) {
+                dp[j][0] = max(dp[j][0], dp[j][1] + prices[i]);
+                dp[j][1] = max(dp[j][1], dp[j - 1][0] - prices[i]);
+            }
+        }
+        return dp[k][0];
+    }
+};
+```
+
   
 
 
