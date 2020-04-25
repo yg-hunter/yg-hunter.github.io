@@ -1129,18 +1129,17 @@ public:
 
 ### 11.3.1 动态规划  
 两步走      
- - 状态定义：    
+1. 状态定义：    
  	DP[i][j]，其中i表示到第i天，第二维的j表示： 0表示当前手中没有股票；1表示当前手中有一股，可以卖掉，也可以不卖。      
 	
- - 状态转移方程：    
- 	1. DP[i][0]就表示到第i天，手中没有股票时，收益最大值。他可以从以下两个状态转移过来：  
+2. 状态转移方程：  
+	- DP[i][0]就表示到第i天，手中没有股票时，收益最大值。他可以从以下两个状态转移过来：  
 		- DP[i-1][0];  // 前一天手中没有股票，这次也不买入股票时，收益的最大值     
 		- DP[i-1][1]+prices[i]; //前一天手中有一股，这次卖掉     
 	则，DP[i][0]最大值取上面俩最大值。     
-
-
-	2. DP[i][1]表示到第i天，手中有一股时，收益最大值。它可以从以下俩状态转移过来：   
-		- DP[i-1][1];  // 前一天手中也有股票，这次也不卖掉      
+  
+  - DP[i][1]表示到第i天，手中有一股时，收益最大值。它可以从以下俩状态转移过来：  
+  		- DP[i-1][1];  // 前一天手中也有股票，这次也不卖掉      
 		- DP[i-1][0]-prices[i]; //前一天手中没有股票，这次买入一股     
 	同样，DP[i][1]取两种情况的最大值。     
 				
@@ -1159,23 +1158,15 @@ public:
             return 0;
         
         int len = prices.size();
-        int k = 2; //最多交易k次，本题可将k设置为2
-        vector<vector<vector<int>>> max_profit(len, vector<vector<int>>(k+1, vector<int>(2, 0xff000000)));
-        max_profit[0][0][0] = 0;
-        max_profit[0][1][1] = -prices[0];
-        int max_val = 0;
+        vector<vector<int>> DP(len, vector<int>(2));
+        DP[0][0] = 0;
+        DP[0][1] = -prices[0];
 
-        for(int i = 1; i < len; i++){
-            max_profit[i][0][0] = 0;
-            for(int j = 1; j <= k; j++){
-                max_profit[i][j][0] = max(max_profit[i-1][j][0], max_profit[i-1][j][1]+prices[i]);
-                max_profit[i][j][1] = max(max_profit[i-1][j][1], max_profit[i-1][j-1][0]-prices[i]);
-            }            
+        for(int i = 1; i < len; i++) {
+            DP[i][0] = max(DP[i-1][0], DP[i-1][1]+prices[i]);
+            DP[i][1] = max(DP[i-1][1], DP[i-1][0]-prices[i]);
         }
-        for(int j = 0; j <= k; j++)
-            max_val = max(max_val, max_profit[len-1][j][0]);
-
-        return max_val;
+        return DP[len-1][0];        
     }
 };
 ```
@@ -1260,15 +1251,23 @@ public:
             return 0;
         
         int len = prices.size();
-        vector<vector<int>> DP(len, vector<int>(2));
-        DP[0][0] = 0;
-        DP[0][1] = -prices[0];
+        int k = 2; //最多交易k次，本题可将k设置为2
+        vector<vector<vector<int>>> max_profit(len, vector<vector<int>>(k+1, vector<int>(2, 0xff000000)));
+        max_profit[0][0][0] = 0;
+        max_profit[0][1][1] = -prices[0];
+        int max_val = 0;
 
-        for(int i = 1; i < len; i++) {
-            DP[i][0] = max(DP[i-1][0], DP[i-1][1]+prices[i]);
-            DP[i][1] = max(DP[i-1][1], DP[i-1][0]-prices[i]);
+        for(int i = 1; i < len; i++){
+            max_profit[i][0][0] = 0;
+            for(int j = 1; j <= k; j++){
+                max_profit[i][j][0] = max(max_profit[i-1][j][0], max_profit[i-1][j][1]+prices[i]);
+                max_profit[i][j][1] = max(max_profit[i-1][j][1], max_profit[i-1][j-1][0]-prices[i]);
+            }            
         }
-        return DP[len-1][0];        
+        for(int j = 0; j <= k; j++)
+            max_val = max(max_val, max_profit[len-1][j][0]);
+
+        return max_val;
     }
 };
 ```  
