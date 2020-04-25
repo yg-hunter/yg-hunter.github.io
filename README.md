@@ -1361,12 +1361,38 @@ public:
     }
 };
 ```  
-上面代码提交leetcode时，当k超大时(执行到第209个测试用例时)，报*AddressSanitizer: allocator is out of memory trying to allocate 0x59682f018 bytes*错误，所以还需优化。
+上面代码提交leetcode时，当k超大时(执行到第209个测试用例时，k=10亿，n=1w)，报*AddressSanitizer: allocator is out of memory trying to allocate 0x59682f018 bytes*错误，所以还需优化。
 
 优化如下：
 ```
+int maxProfit(int k, vector<int>& prices) {
+	if(prices.empty() || k <= 0) 
+		return 0;
 
-```
+	int len = prices.size();
+	if(k > (len/2+1)) // 交易次数最多只能为总天数的一半
+		k = len/2 + 1;
+
+	vector<vector<vector<int>>> max_profit(len, vector<vector<int>>(k+1, vector<int>(2, 0xff000000)));
+	max_profit[0][0][0] = 0;
+	max_profit[0][1][1] = -prices[0];
+	int max_val = 0;
+
+	for(int i = 1; i < len; i++){
+		max_profit[i][0][0] = 0;
+		for(int j = 1; j <= k; j++){
+			max_profit[i][j][0] = max(max_profit[i-1][j][0], max_profit[i-1][j][1]+prices[i]);
+			max_profit[i][j][1] = max(max_profit[i-1][j][1], max_profit[i-1][j-1][0]-prices[i]);
+		}            
+	}
+	for(int j = 0; j <= k; j++)
+		max_val = max(max_val, max_profit[len-1][j][0]);
+
+	return max_val;
+}
+```  
+然后拿上面那个测试用例测试(k=10亿，n=1w)，报超出时间限制！我在我自己虚拟机测试了下跑完用了56s。看来还是要继续优化。
+
   
 
 
