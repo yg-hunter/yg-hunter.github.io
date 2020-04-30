@@ -21,6 +21,7 @@
 		- [188.  买卖股票的最佳时机Ⅳ](#1.13)   
 		- [309.  最佳买卖股票时机含冷冻期](#1.14)   
 		- [714.  买卖股票的最佳时机含手续费](#1.15)   
+		- [72.   编辑距离](#1.16)   
 		
 		
 	2. [树形DP](#2)
@@ -1624,7 +1625,153 @@ public:
         return DP[len-1][0];
     }
 };
-```   
+```     
+  
+   
+  
+  <br/>
+  <br/>
+  <br/>
+  
+***
+<h1 id="1.16">LeetCode 72</h1>  [回到目录](#0)  
+## 16 [编辑距离 edit-distance](https://leetcode-cn.com/problems/edit-distance/)    
+
+## 16.1 题目描述      
+给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。  
+
+你可以对一个单词进行如下三种操作：  
+
+ - 插入一个字符  
+ - 删除一个字符  
+ - 替换一个字符  
+  
+  
+#### 示例 1:  
+```
+输入：word1 = "horse", word2 = "ros"  
+输出：3  
+解释：  
+horse -> rorse (将 'h' 替换为 'r')  
+rorse -> rose (删除 'r')  
+rose -> ros (删除 'e')  
+```  
+
+#### 示例 2：  
+```
+输入：word1 = "intention", word2 = "execution"  
+输出：5  
+解释：  
+intention -> inention (删除 't')  
+inention -> enention (将 'i' 替换为 'e')  
+enention -> exention (将 'n' 替换为 'x')  
+exention -> exection (将 'n' 替换为 'c')  
+exection -> execution (插入 'u')  
+```  
+
+16.2  解决思路
+本题看完后，感觉无从下手，但是dp专题的话，肯定是往动态规划上想，但是仍不得其法，后来还是看了题解，具体解法看下节。
+
+16.3 解法  
+看了官方解答的视频，讲的很好，很清晰。  
+
+首先，定义状态： DP[i][j]，它表示从word1前i个字符变换成word2的前j个字符，所需的最少操作次数。  
+然后就是状态转移方程：   
+ 若word1[i-1] == word2[j-1]，则DP[i][j]取DP[i-1][j-1]，无需操作。  
+ 否则的话，有三种情况：  
+ - 增加，即针对word1中前i个字符增加一个字符就能变成word2中前j个字符，也就相当于将word2的第j个字符删掉后，两个子串就相同了，则DP[i][j] = DP[i][j-1] + 1  
+ - 删除，即针对word1中前i个字符删除掉一个字符就能变成word2中前j个字符，则DP[i][j] = DP[i-1][j] + 1  
+ - 修改，即针对word1中前i个字符删修改一个字符就能变成word2中前j个字符，相当于分别把这两子串的最后一个字符删掉后，就相同了，则DP[i][j] = DP[i-1][j-1] + 1    
+   
+  
+  DP[i][j]取上面三种情况下的最小值即可。  
+
+注：要考虑到 word1 或 word2 一个字母都没有，即全增加/删除的情况，所以预留 DP[0][j] 和 DP[i][0]。    
+ 
+  
+  
+```c++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int row_len = word1.size()+1;
+        int col_len = word2.size()+1;
+        if(row_len== 0 || col_len == 0)
+            return 0;
+        
+        vector<vector<int>> DP(row_len, vector<int>(col_len));
+        for (int i = 0; i < row_len; i++) //初始化
+            DP[i][0] = i;
+        
+        for (int j = 0; j < col_len; j++)
+            DP[0][j] = j;
+
+        for (int i = 1; i < row_len; i++) {
+            for (int j = 1; j < col_len; j++) {
+                DP[i][j] = min(DP[i-1][j-1], min(DP[i-1][j], DP[i][j-1])) + 1;
+
+                if (word1[i-1] == word2[j-1])
+                    DP[i][j] = min(DP[i][j], DP[i-1][j-1]);
+            }
+        }
+        return DP[row_len-1][col_len-1];
+    }
+};
+```  
+或者按官方写法：
+```c++
+int minDistance(string word1, string word2) {
+	int row_len = word1.size()+1;
+	int col_len = word2.size()+1;
+	if(row_len==0 || col_len ==0)
+		return 0;
+
+	vector<vector<int>> DP(row_len, vector<int>(col_len));
+	for (int i = 0; i < row_len; i++) //初始化
+		DP[i][0] = i;
+
+	for (int j = 0; j < col_len; j++)
+		DP[0][j] = j;
+
+	// 计算所有 DP 值
+	for (int i = 1; i < row_len; i++) {
+		for (int j = 1; j < col_len; j++) {
+			int left = DP[i-1][j] + 1;
+			int down = DP[i][j-1] + 1;
+			int left_down = DP[i-1][j-1];
+			if (word1[i-1] != word2[j-1])
+				left_down += 1;
+
+			DP[i][j] = min(left, min(down, left_down));
+		}
+	}
+	return DP[row_len-1][col_len-1];
+}
+```  
+代码中可以看出，有两层循环来遍历两个字符串，所以时间复杂度就是O(col_len * row_len)；空间复杂度方面，因为申请了个二维数组，所以空间复杂度也是O(col_len * row_len)。  
+
+
+补上递归解法代码：  
+```c++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+      int len1 = word1.length();
+      int len2 = word2.length();
+
+      if(len1==0 || len2==0)
+        return max(len1, len2);
+
+      if(word1[len1-1] == word2[len2-1])
+        return minDistance(word1.substr(0, len1-1), word2.substr(0, len2-1));
+
+      return min(min(minDistance(word1, word2.substr(0, len2-1)), minDistance(word1.substr(0, len1-1), word2)), 
+        minDistance(word1.substr(0, len1-1), word2.substr(0, len2-1)))+1;
+    }
+};
+```
+动态规划解法是对递归解法的优化，因为递归中，有大量重复的计算。   
+
 
  
  
