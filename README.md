@@ -1835,13 +1835,14 @@ p = "*a*b"
 ```    
    
   
-### 17.2 解题思路
+### 17.2 解题思路  
 - 递归
 - 迭代
 - 动态规划
 
 ### 17.3 解决方案  
-迭代法
+
+#### 17.3.1 迭代法
 ```c
 bool isMatch(char * s, char * p){
     if(s==NULL || p==NULL)
@@ -1880,6 +1881,84 @@ bool isMatch(char * s, char * p){
     return true;
 }
 ```   
+
+#### 17.3.2 动态规划
+这里看到题解中有个[解答](https://leetcode-cn.com/problems/wildcard-matching/solution/tong-su-xiang-xi-shuang-zhi-zhen-he-dong-tai-gui-h/)很不错: 
+定义状态：opt[i][j],表示字符串s[i]和模式串p[j]是否匹配。  
+假设s长度为n，模式串长度为m，则结束条件及递推关系如下：  
+opt[i][j] = true // i==n && j==m    
+opt[i][j] = false // i!=n && j==m    
+opt[i][j] = is_all_star_or_not(p) // i==n && j!=m  
+opt[i][j] = opt[i+1][j+1] // i!=n && j!=m && (s[i]==p[j] || p[j]=='?')  
+opt[i][j] = opt[i+1][j] || opt[i][j+1] // i!=n && j!=m && p[j]=='*'  
+opt[i][j] = false // otherwise   
+
+动态规划自顶向下代码（带memo优化），我把原代码改成了纯cpp：    
+```c++
+bool isMatch(string s, string p) {
+	vector<vector<char>> memo(s.size()+1, vector<char>(p.size()+1, -1));
+	return do_match(s, p, 0, 0, memo);
+}
+
+bool do_match(string &s, string &p, int i, int j, vector<vector<char>>& memo) {
+	if (memo[i][j] != -1) 
+		return memo[i][j];
+
+	if (i == s.size() && j == p.size()) 
+		return memo[i][j] = true;
+
+	if (i != s.size() && j == p.size()) 
+		return memo[i][j] = false;
+
+	// is_all_star_or_not(p[j, m))
+	if (i == s.size() && j != p.size()) {
+		int temp = j;
+		while (p[temp] == '*') 
+			++temp;
+
+		return memo[i][j] = (temp == p.size());
+	}
+
+	if (s[i] == p[j] || p[j] == '?') 
+		return memo[i][j] = do_match(s, p, i+1, j+1, memo);
+	else if (p[j] == '*')
+		return memo[i][j] = (do_match(s, p, i+1, j, memo) || do_match(s, p, i, j+1, memo));
+	else 
+		return memo[i][j] = false;
+}
+```  
+
+自底向上动态规划：  
+```c++
+bool isMatch(string s, string p) {
+	int n = s.size(), m = p.size();
+	bool dp[m + 1];
+	dp[m] = true;
+	for (int j = m - 1; j >= 0; j--) {
+		dp[j] = (p[j]=='*'?dp[j+1]:false);
+	}
+
+	for (int i = n - 1; i >= 0; --i) {
+		bool oldright = dp[m];
+		for (int j = m - 1; j >= 0; --j) {
+			if (s[i] == p[j] || p[j] == '?') {
+				int temp = dp[j];
+				dp[j] = oldright;
+				oldright = temp;
+			}
+			else if (p[j] == '*') {
+				int temp = dp[j];
+				dp[j] = dp[j] || dp[j+1];
+				oldright = temp;
+			}
+			else oldright = dp[j], dp[j] = false;
+		}
+		dp[m] = false;
+	}
+	return dp[0];
+}
+```  
+
  
  
 
