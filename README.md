@@ -1845,40 +1845,40 @@ p = "*a*b"
 #### 17.3.1 迭代法
 ```c
 bool isMatch(char * s, char * p){
-    if(s==NULL || p==NULL)
-        return false;
-    
-    int sLen = strlen(s), pLen = strlen(p);
-    int sIdx = 0, pIdx = 0;
-    int starIdx = -1, sTmpIdx = -1;
+	if(s==NULL || p==NULL)
+		return false;
 
-    while (sIdx < sLen) {
-      if (pIdx < pLen && (p[pIdx] == '?' || p[pIdx] == s[sIdx])){
-        ++sIdx;
-        ++pIdx;
-      }
+	int sLen = strlen(s), pLen = strlen(p);
+	int sIdx = 0, pIdx = 0;
+	int starIdx = -1, sTmpIdx = -1;
 
-      // If pattern character = '*'
-      else if (pIdx < pLen && p[pIdx] == '*') {          
-        starIdx = pIdx;
-        sTmpIdx = sIdx;
-        ++pIdx;
-      }      
-      else if (starIdx == -1) {
-        return false;
-      }
-      else {
-        pIdx = starIdx + 1;
-        sIdx = sTmpIdx + 1;
-        sTmpIdx = sIdx;
-      }
-    }
+	while (sIdx < sLen) {
+	  if (pIdx < pLen && (p[pIdx] == '?' || p[pIdx] == s[sIdx])){
+		++sIdx;
+		++pIdx;
+	  }
 
-    for(int i = pIdx; i < pLen; i++)
-      if (p[i] != '*') 
-        return false;
-    
-    return true;
+	  // If pattern character = '*'
+	  else if (pIdx < pLen && p[pIdx] == '*') {          
+		starIdx = pIdx;
+		sTmpIdx = sIdx;
+		++pIdx;
+	  }      
+	  else if (starIdx == -1) {
+		return false;
+	  }
+	  else {
+		pIdx = starIdx + 1;
+		sIdx = sTmpIdx + 1;
+		sTmpIdx = sIdx;
+	  }
+	}
+
+	for(int i = pIdx; i < pLen; i++)
+	  if (p[i] != '*') 
+		return false;
+
+	return true;
 }
 ```   
 
