@@ -23,6 +23,7 @@
 		- [714.  买卖股票的最佳时机含手续费](#1.15)   
 		- [72.   编辑距离](#1.16)   
 		- [44.   通配符匹配](#1.17)   
+		- [10.   正则表达式匹配](#1.18)   
 		
 		
 	2. [树形DP](#2)
@@ -1957,8 +1958,115 @@ bool isMatch(string s, string p) {
 	}
 	return dp[0];
 }
-```  
+```    
 
+  
+    
+  <br/>
+  <br/>
+  <br/>
+  
+***
+<h1 id="1.18">LeetCode 10</h1>  [回到目录](#0)   
+## 18 [通配符匹配 regular expression matching](https://leetcode-cn.com/problems/regular-expression-matching/)    
+
+## 18.1 题目描述     
+给定一个字符串 `s` 和一个字符规律 `p` ，请你来实现一个支持 `'.'` 和 `'*'` 的正则表达式匹配。   
+> `'.'` 匹配任意单个字符。
+> `'*'` 匹配零个或者多个前面的那一个元素。  
+所谓匹配，要是涵盖**整个**字符串`s`的，而不是部分字符串。  
+  
+#### 说明：
+- `s` 可能为空，且只包含从 `a-z` 的小写字母。    
+- `p` 可能为空，且只包含从 `a-z` 的小写字母，以及字符 `.` 和 `*`。   
+
+#### 示例 1：
+```
+输入:
+s = "aa"
+p = "a"
+输出: false
+解释: "a" 无法匹配 "aa" 整个字符串。
+```    
+#### 示例 2：
+```
+输入:
+s = "aa"
+p = "a*"
+输出: true
+解释: 因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 "aa" 可被视为 'a' 重复了一次。
+```    
+#### 示例 3：
+```
+输入:
+s = "ab"
+p = ".*"
+输出: true
+解释: ".*" 表示可匹配零个或多个（'*'）任意字符（'.'）。  
+```    
+#### 示例 4：
+```
+输入:
+s = "aab"
+p = "c*a*b"
+输出: true
+解释: 因为 '*' 表示零个或多个，这里 'c' 为 0 个, 'a' 被重复一次。因此可以匹配字符串 "aab"。  
+```    
+
+## 18.2 解决方法
+
+### 18.2.1 动态规划  
+该解法[在此](https://leetcode.com/problems/regular-expression-matching/discuss/5684/C%2B%2B-O(n)-space-DP)，分两步走：  
+  
+定义状态： DP[i][j]，表示s[0..i]跟p[0..j]是否匹配，匹配则为true，否则为false。    
+  
+状态转移方程：  
+ - dp[i][j] = dp[i-1][j-1]   //p[j-1] != '*' && (s[i-1] == p[j-1] || p[j-1] == '.')   
+ - dp[i][j] = dp[i][j-2]     //p[j-1] == '*' 且之前没匹配过*    
+ - dp[i][j] = dp[i-1][j] && (s[i-1] == p[j-2] || p[j-2] == '.')   //p[j-1] == '*' 且至少匹配了一次     
+	
+代码如下：  
+```c++
+bool isMatch(string s, string p) {
+    int m = s.size(), n = p.size();
+    vector<vector<bool>> DP(m + 1, vector<bool>(n + 1, false));
+    DP[0][0] = true;
+    for (int i = 0; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (p[j - 1] == '*') {
+                DP[i][j] = DP[i][j - 2] || (i && DP[i - 1][j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.'));
+            } else {
+                DP[i][j] = i && DP[i - 1][j - 1] && (s[i - 1] == p[j - 1] || p[j - 1] == '.');
+            }
+        }
+    }
+    return DP[m][n];
+}
+```
+
+
+优化空间，只用一维数组即可，代码如下：  
+
+```c++
+bool isMatch(string s, string p) {
+    int m = s.size(), n = p.size();
+    vector<bool> DP(n + 1, false);
+    for (int i = 0; i <= m; i++) {
+        bool pre = DP[0];
+        DP[0] = !i;
+        for (int j = 1; j <= n; j++) {
+            bool temp = DP[j];
+            if (p[j - 1] == '*') {
+                DP[j] = DP[j - 2] || (i && DP[j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.'));
+            } else {
+                DP[j] = i && pre && (s[i - 1] == p[j - 1] || p[j - 1] == '.');
+            }
+            pre = temp;
+        }
+    }
+    return DP[n];
+}
+```
  
  
 
