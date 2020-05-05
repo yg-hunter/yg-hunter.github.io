@@ -2071,7 +2071,7 @@ bool isMatch(string s, string p) {
   
   
 ### 18.2.2 迭代法  
-题解中看到一个很精简的代码：    
+[题解](https://leetcode.com/problems/regular-expression-matching/discuss/6010/C%2B%2B-Sharing-my-7-line-recursive-solution-(100ms)-and-20-line-DP-solution-(30ms).)中看到一个很精简的代码：    
 ```c
 bool isMatch(const char *s, const char *p) {
     for(char c = *p; c != 0; ++s, c = *p) {
