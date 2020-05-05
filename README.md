@@ -1968,7 +1968,7 @@ bool isMatch(string s, string p) {
   
 ***
 <h1 id="1.18">LeetCode 10</h1>  [回到目录](#0)   
-## 18 [通配符匹配 regular expression matching](https://leetcode-cn.com/problems/regular-expression-matching/)    
+## 18 [正则表达式匹配 regular expression matching](https://leetcode-cn.com/problems/regular-expression-matching/)    
 
 ## 18.1 题目描述     
 给定一个字符串 `s` 和一个字符规律 `p` ，请你来实现一个支持 `'.'` 和 `'*'` 的正则表达式匹配。   
@@ -2066,7 +2066,27 @@ bool isMatch(string s, string p) {
     }
     return DP[n];
 }
-```
+```   
+  
+  
+  
+### 18.2.2 迭代法  
+题解中看到一个很精简的代码：    
+```c
+bool isMatch(const char *s, const char *p) {
+    for(char c = *p; c != 0; ++s, c = *p) {
+        if(*(p+1) != '*')
+            p++;
+        else if(isMatch(s, p+2))
+            return true;
+        if((*s==0) || ((c!='.') && (c!=*s)))
+            return false;
+    }
+    return *s == 0;
+}
+```    
+
+
  
  
 
