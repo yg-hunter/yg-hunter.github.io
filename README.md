@@ -25,9 +25,22 @@
 		- [44.   通配符匹配](#1.17)   
 		- [10.   正则表达式匹配](#1.18)   
 		
+
+
+	2. [区间DP](#2)  
+		- [516  最长回文子序列](#2.1)  
 		
-	2. [树形DP](#2)
-		- [337. 打家劫舍 Ⅲ](#2.1)
+
+	3. [背包DP](#3)  
+	  
+	  
+	
+	4. [树形DP](#4)
+		- [337. 打家劫舍 Ⅲ](#4.1)  
+		
+
+   
+   
 
   <br/>
   <br/>
@@ -2088,6 +2101,133 @@ bool isMatch(const char *s, const char *p) {
 
 
  
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  
+<h1 id="2"> 区间DP </h1>  [回到目录](#0)  
+  
+      
+  <br/>
+  <br/>
+  
+***
+<h1 id="2.1">LeetCode 516</h1>  [回到目录](#0)    
+## 1 [最长回文子序列 longest palindromic subsequence](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)      
+
+## 1.1 题目描述      
+给定一个字符串`s`，找到其中最长的回文子序列。可以假设`s`的最大长度为`1000`。   
+
+#### 示例 1：  
+```  
+输入:  
+"bbbab"  
+
+输出:  
+4  
+一个可能的最长回文子序列为 "bbbb"。  
+```  
+#### 示例 2：  
+```   
+输入:  
+"cbbd"  
+
+输出:  
+2  
+一个可能的最长回文子序列为 "bb"。   
+```    
+
+## 1.2 解决方案  
+- 递归
+- 动态规划
+
+
+### 1.2.1 递归法
+
+```c++
+class Solution {
+public:
+    int do_lpss(string s, int i, int j, vector<vector<int>>& memo) {
+        if (memo[i][j] >= 0)
+            return memo[i][j];
+        
+        if (i > j)      
+			return 0;
+			
+        if (i == j)     
+			return 1;
+        
+        if (s[i] == s[j])
+            memo[i][j] = do_lpss(s, i+1, j-1, memo) + 2;
+        else
+            memo[i][j] = max(do_lpss(s, i+1, j, memo), do_lpss(s, i, j-1, memo));
+        
+        return memo[i][j];
+    }
+	
+    int longestPalindromeSubseq(string s) {
+        int s_len = s.length();
+        if(s_len <= 1)
+            return s_len;
+
+        vector<vector<int>> memo(s_len, vector<int>(s_len, -1));
+        return do_lpss(s, 0, s_len-1, memo);
+    }
+};
+```  
+
+### 1.2.1 动态规划    
+其实就是对上面递归的优化，这里分两步走：  
+ - 定义状态： dp[i][j], 表示该字符串s的下标i到j直接最长回文子序列的最长值
+ - 状态转移： s[i]==s[j]时，dp[i][j] = dp[i+1][j-1] + 2  
+ 		  否则的话，dp[i][j] = max(dp[i+1][j], dp[i][j-1])  
+  
+c++代码实现如下：  
+```c++
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        int s_len = s.length();
+        if(s_len <= 1)
+            return s_len;
+        
+        vector<vector<int>> dp(s_len, vector<int>(s_len));
+        for (int i = s_len - 1; i >= 0; i--) {
+            dp[i][i] = 1;
+            for (int j = i+1; j < s_len; j++) {
+                if (s[i] == s[j]) {
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                } else {
+                    dp[i][j] = max(dp[i+1][j], dp[i][j-1]);
+                }
+            }
+        }
+        return dp[0][s_len-1];
+    }
+};
+```
+
+
+
+
+
+  <br/>  
+  
+  
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  
+<h1 id="3"> 背包DP </h1>  [回到目录](#0)  
+  
+  
+  <br/>  
+  
+  
  
 
   <br/>
@@ -2095,13 +2235,13 @@ bool isMatch(const char *s, const char *p) {
   <br/>
   <br/>
   
-<h1 id="2"> 树形DP </h1>  [回到目录](#0)  
+<h1 id="4"> 树形DP </h1>  [回到目录](#0)  
   
   
   <br/>  
   
   
-<h1 id="2.1"> LeetCode 337 </h1>  [回到目录](#0)  
+<h1 id="4.1"> LeetCode 337 </h1>  [回到目录](#0)  
 ## 1 [打家劫舍 Ⅲ house robber](https://leetcode-cn.com/problems/house-robber-iii/)
 
 ## 1.1 题目描述
