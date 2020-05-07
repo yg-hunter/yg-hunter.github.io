@@ -2261,7 +2261,7 @@ S = 'abcdabcdabcdabcdabcdabcdabcdabcddcbadcbadcbadcbadcbadcbadcbadcba'
 
 
 ### 2.2.1 动态规划  
-本题参考[这里](https://leetcode.com/problems/count-different-palindromic-subsequences/discuss/246186/C%2B%2B-neat)，c++代码如下：  
+本题参考[这里](https://leetcode.com/problems/count-different-palindromic-subsequences/discuss/246186/C%2B%2B-neat)，没看太懂，以后有空慢慢消化，先加上了，c++代码如下：  
 ```c++
 int countPalindromicSubsequences(string S) {
     int s_len = S.size();
