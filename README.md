@@ -28,9 +28,10 @@
 
 
 	2. [区间DP](#2)  
-		- [516  最长回文子序列](#2.1)  
-		- [730  统计不同回文子字符串](#2.2)  
+		- [516.  最长回文子序列](#2.1)  
+		- [730.  统计不同回文子字符串](#2.2)  
 		- [1039. 多边形三角剖分的最低得分](#2.3)      
+		- [664.  奇怪的打印机](#2.4)     
 		
 
 	3. [背包DP](#3)  
@@ -2371,7 +2372,91 @@ int minScoreTriangulation(vector<int>& A) {
     return socres[0][len-1];
 }
 ```  
-代码中可以看出，三层循环，所以时间复杂度： O（n³），空间复杂度O（n²）。 
+代码中可以看出，三层循环，所以时间复杂度： O（n³），空间复杂度O（n²）。   
+
+  
+  
+  <br/>    
+  
+      
+  <br/>
+  <br/>
+  
+***
+<h1 id="2.4">LeetCode 664</h1>  [回到目录](#0)    
+## 4 [奇怪的打印机 strange printer](https://leetcode-cn.com/problems/strange-printer/)       
+
+## 4.1 题目描述      
+有台奇怪的打印机有以下两个特殊要求：   
+	1. 打印机每次只能打印同一个字符序列。    
+	2. 每次可以在任意起始和结束位置打印新字符，并且会覆盖掉原来已有的字符。    
+	
+给定一个只包含小写英文字母的字符串，你的任务是计算这个打印机打印它需要的最少次数。    
+
+#### 示例 1：
+```
+输入: "aaabbb"
+输出: 2
+解释: 首先打印 "aaa" 然后打印 "bbb"。 
+```  
+
+#### 示例 2：
+```
+输入: "aba"
+输出: 2
+解释: 首先打印 "aaa" 然后在第二个位置打印 "b" 覆盖掉原来的字符 'a'。
+```    
+
+#### 提示：  
+ - 输入字符串的长度不会超过 100。    
+  
+ 
+## 4.2 解决方法  
+ 
+### 4.2.1 动态规划     
+定义状态：min_count[i][j], 表示从下标i到j字符，打印机要打印的最少次数。    
+  
+状态转移方程为：     
+ - 当s[i]==s[i+1]时， min_count[i][i+1]=1    
+ - 当s[i]!=s[i+1]时， min_count[i][i+1]=2  
+
+那么类似的，我们对于s从下标i到j，假设中间有个第k个字符(i < k < j), 有如下转移方程：  
+ - 当s[k]==s[i]时，`min_count[j][i]` 就为 `min_count[j][k] + min_count[k+1][i] - 1` 中最小的；    
+ - 当s[k]!=s[i]时，`min_count[j][i]` 就为 `min_count[j][k] + min_count[k+1][i]` 中最小的；    
+
+完整cpp代码如下：  
+```c++
+int strangePrinter(string s) {
+    if(s.empty())
+        return 0;
+
+    int len = s.size();
+    vector<vector<int>> min_count(len, vector<int>(len, len));
+    for(int i = 0; i < len; i++) {
+        min_count[i][i] = 1;
+    }
+
+    for(int i = 0; i < len; i++) {
+        for(int j = i; j >= 0; j--) {
+            for(int k = j; k < i; k++) {
+                if(s[k] == s[i]) 
+                    min_count[j][i] = min(min_count[j][i], min_count[j][k]+min_count[k+1][i]-1);
+                else 
+                    min_count[j][i] = min(min_count[j][i], min_count[j][k]+min_count[k+1][i]);
+            }
+        }
+    }
+    return min_count[0][len-1];
+}
+```  
+代码中可以看出，三层循环，所以时间复杂度： O（n³），空间复杂度O（n²）。     
+
+  
+  
+  
+  
+  
+  
 
 
 
