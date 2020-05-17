@@ -2536,7 +2536,7 @@ int burst(vector<vector<int>>& memo, vector<int>& nums, int left, int right) {
 假设i，j中间有个k，则k把i，j分为左右两部分，左边是（i，k]，右边是[k，j），则
 dp[i][j] = max{nums[i]*nums[k]*nums[j] + dp[i][k] + dp[k][j]}    
     
-若i+1=j，即i，j是邻接的时候，dp[i][j] = 1.    
+若i+1=j，即i，j是邻接的时候，dp[i][j] = 0.    
   
   c++代码如下：
  ```c++
