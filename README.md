@@ -31,7 +31,8 @@
 		- [516.  最长回文子序列](#2.1)  
 		- [730.  统计不同回文子字符串](#2.2)  
 		- [1039. 多边形三角剖分的最低得分](#2.3)      
-		- [664.  奇怪的打印机](#2.4)     
+		- [664.  奇怪的打印机](#2.4)        
+		- [312.  戳气球](#2.5)     
 		
 
 	3. [背包DP](#3)  
@@ -2453,6 +2454,119 @@ int strangePrinter(string s) {
 
   
   
+  
+   
+  
+  <br/>    
+  
+      
+  <br/>
+  <br/>
+  
+***
+<h1 id="2.5">LeetCode 312</h1>  [回到目录](#0)    
+## 5 [戳气球 burst balloons](https://leetcode-cn.com/problems/burst-balloons/)       
+
+## 5.1 题目描述      
+有 `n` 个气球，编号为 `0` 到 `n-1`，每个气球上都标有一个数字，这些数字存在数组 `nums` 中。  
+
+现在要求你戳破所有的气球。每当你戳破一个气球 i 时，你可以获得 `nums[left] * nums[i] * nums[right]` 个硬币。 这里的 `left` 和 `right` 代表和 `i` 相邻的两个气球的序号。注意当你戳破了气球 `i` 后，气球 `left` 和气球 `right` 就变成了相邻的气球。
+
+求所能获得硬币的最大数量。  
+
+#### 说明 ：
+ - 你可以假设 `nums[-1] = nums[n] = 1`，但注意它们不是真实存在的所以并不能被戳破。  
+ - 0 ≤ `n` ≤ 500, 0 ≤ `nums[i]` ≤ 100
+
+#### 示例 ：
+```
+输入: [3,1,5,8]
+输出: 167 
+解释: nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
+     coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+```    
+ 
+## 5.2 解决方法    
+题目意思还是比较好理解，最简单最直接就是暴力穷举法，然后找出最大值，但是时间复杂度非常巨大(为O(n!))，一般不可接受。  
+因为暴力枚举法包含了大量的重复计算，所以可以做优化，一种是分治思想，加上缓存计算；还有就是动态规划。  
+ 
+### 5.2.1 递归+缓存优化   
+仔细揣摩就会发现，如果第k个气球被刺破之后，问题就变成了：求k左边部分能获取的最大金币数，加上k的右边部分能获取的最大金币数的和，这两个子问题去求解。这种分治思想很适合用递归来实现。  
+
+完整cpp代码如下：  
+```c++
+int maxCoins(vector<int>& nums) {
+    int len = nums.size();
+    vector<int> ex_nums(len+2, 1);
+    int i = 1;
+    for(int x : nums) {
+        if(x > 0)
+            ex_nums[i++] = x;
+    }
+    int real_len = i + 1; 
+
+    vector<vector<int>> memo(real_len, vector<int>(real_len));
+    return burst(memo, ex_nums, 0, real_len-1);
+}
+
+int burst(vector<vector<int>>& memo, vector<int>& nums, int left, int right) {
+    if (left+1 == right) 
+        return 0;
+    
+    if (memo[left][right] > 0) 
+        return memo[left][right];
+    
+    int ans = 0;
+    for (int i = left + 1; i < right; ++i) {
+        ans = max(ans, nums[left]*nums[i]*nums[right] + 
+        	burst(memo, nums, left, i) + burst(memo, nums, i, right));
+    }
+	
+    memo[left][right] = ans;
+    return ans;
+}
+```  
+代码中可以看出，三层循环，所以时间复杂度： O（n³），空间复杂度O（n²）。   
+   
+   
+### 5.2.2 动态规划     
+两步走：    
+定义状态dp[i][j]，表示从第i个气球到第j个气球之间(不包含i，j)，能获取的最大金币数。  
+状态转移如下：    
+假设i，j中间有个k，则k把i，j分为左右两部分，左边是（i，k]，右边是[k，j），则
+dp[i][j] = max{nums[i]*nums[k]*nums[j] + dp[i][k] + dp[k][j]}    
+    
+若i+1=j，即i，j是邻接的时候，dp[i][j] = 1.    
+  
+  c++代码如下：
+ ```c++
+ int maxCoins(vector<int>& nums) {
+    int len = nums.size();
+    vector<int> ext_nums(len+2);
+    
+    int i = 1;
+    for (int x : nums) {
+        if (x > 0) 
+            ext_nums[i++] = x;
+    }
+    ext_nums[0] = ext_nums[i++] = 1;
+
+
+    vector<vector<int>> dp(i, vector<int>(i));
+    for (int k = 2; k < i; ++k) {
+        for (int left = 0; left < i-k; ++left) {
+            int right = left + k;
+            for (int i = left + 1; i < right; ++i)
+                dp[left][right] = max(dp[left][right],
+                    ext_nums[left] * ext_nums[i] * ext_nums[right] + dp[left][i] + dp[i][right]);
+        }
+    }
+
+    return dp[0][i - 1];
+}
+ ```  
+
+
   
   
   
